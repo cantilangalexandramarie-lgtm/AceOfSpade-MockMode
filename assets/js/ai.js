@@ -106,17 +106,26 @@ async function analyzeResume(resumeText) {
   return parseJSON(result);
 }
 
-async function generateQuestions(resumeText, personality) {
+async function generateQuestions(resumeText, personality, role = 'general') {
   const personalityPrompts = {
     corporate: 'You are a strict, formal corporate hiring manager. Ask tough, professional questions.',
     startup: 'You are a chill startup founder. Ask casual questions focused on passion and culture fit.',
     technical: 'You are a tough technical lead. Ask specific technical questions based on their stack.'
   };
 
+  const roleContext = {
+    developer:  'The candidate is interviewing for a Software Developer / Engineer position. Prioritize questions about their code, projects, problem-solving, and tech stack.',
+    designer:   'The candidate is interviewing for a UI/UX Designer position. Prioritize questions about their design process, tools, and portfolio.',
+    analyst:    'The candidate is interviewing for a Data Analyst position. Prioritize questions about data, metrics, tools like SQL or Excel, and analytical thinking.',
+    marketing:  'The candidate is interviewing for a Marketing role. Prioritize questions about campaigns, content, growth, and audience understanding.',
+    general:    'Ask well-rounded questions relevant to their experience and the role they are applying for.'
+  };
+
   const messages = [
     {
       role: 'system',
       content: `${personalityPrompts[personality]}
+      ${roleContext[role] ?? roleContext.general}
       Generate exactly 5 interview questions based on the resume.
       Return ONLY a JSON array of 5 strings, no extra text.
       Format: ["question1", "question2", "question3", "question4", "question5"]`
@@ -131,17 +140,26 @@ async function generateQuestions(resumeText, personality) {
   return parseJSON(result);
 }
 
-async function evaluateAnswer(question, answer, personality) {
+async function evaluateAnswer(question, answer, personality, role = 'general') {
   const personalityPrompts = {
     corporate: 'You are a strict formal corporate hiring manager. React professionally but coldly to weak answers.',
     startup: 'You are a chill startup founder. React warmly but honestly.',
     technical: 'You are a tough technical lead. React skeptically to vague answers.'
   };
 
+  const roleContext = {
+    developer:  'You are evaluating a Software Developer candidate. Hold them to a high technical standard — vague answers about code or architecture should score lower.',
+    designer:   'You are evaluating a UI/UX Designer candidate. Look for design thinking, clarity of process, and user empathy.',
+    analyst:    'You are evaluating a Data Analyst candidate. Expect structured, data-driven reasoning.',
+    marketing:  'You are evaluating a Marketing candidate. Look for creativity, measurable results, and audience awareness.',
+    general:    'Evaluate based on clarity, relevance, and confidence.'
+  };
+
   const messages = [
     {
       role: 'system',
       content: `${personalityPrompts[personality]}
+      ${roleContext[role] ?? roleContext.general}
       Evaluate this interview answer and return ONLY a JSON object with no extra text.
       Format: {
         "reaction": "your in-character reaction to the answer",
@@ -191,7 +209,7 @@ async function streamInterviewerMessage(prompt, personality, targetElement, onDo
   );
 }
 
-async function generateVerdict(scores, resumeAnalysis, personality) {
+async function generateVerdict(scores, resumeAnalysis, personality, role = 'general') {
   const average = scores.reduce((a, b) => a + b, 0) / scores.length;
   let verdict;
 
@@ -202,12 +220,12 @@ async function generateVerdict(scores, resumeAnalysis, personality) {
   const messages = [
     {
       role: 'system',
-      content: `You are the interviewer. Give a final verdict message in character.
+      content: `You are the interviewer for a ${role} position. Give a final verdict message in character.
       Return ONLY a JSON object with no extra text.
       Format: {
         "verdict": "${verdict}",
         "verdict_message": "2-3 sentence in-character final message to the candidate",
-        "final_tip": "one specific actionable tip to improve"
+        "final_tip": "one specific actionable tip to improve as a ${role}"
       }`
     },
     {
