@@ -336,13 +336,10 @@
   let QUESTIONS = [];
   let scores    = [];
 
-  // Test config — matches what interview.js will pass from localStorage
-  const RESUME    = `Alex Reyes — Full Stack Developer, 3 years exp.
-Skills: React, Node.js, PostgreSQL, Docker, AWS Lambda.
-Built real-time chat app 10k DAU. Optimized SQL query 8s→200ms.
-Fintech startup, payment processing. CS degree UP Diliman 2021.`;
-  const PERSONALITY = 'technical';
-  const ROLE        = 'developer';
+  // Pull from localStorage (set by upload.js) — fallback only if nothing saved yet
+  const RESUME      = localStorage.getItem('resume')      || 'Experienced software developer with full stack skills.';
+  const PERSONALITY = localStorage.getItem('personality') || 'technical';
+  const ROLE        = localStorage.getItem('role')        || 'developer';
 
   // ── Web Speech API ────────────────────────────────────────────────────────
   const synth = window.speechSynthesis;
@@ -501,19 +498,22 @@ Fintech startup, payment processing. CS degree UP Diliman 2021.`;
 
     scores.push(result.score ?? 50);
 
-    // Show reaction bubble + speak it
+    // Show reaction bubble
     reactionEl.textContent = `${result.mood_emoji ?? '😐'} ${result.reaction}`;
-    speakText(result.reaction);
 
     // Show feedback in status bar
     statusEl.textContent = result.feedback ?? '';
 
-    // Update stress using the AI's stress_increase value
+    // Update stress
     stress = Math.min(100, stress + (result.stress_increase ?? 5));
     updateStress(stress);
 
     qIndex++;
-    setTimeout(askNext, 2800);
+
+    // Speak reaction, wait for it to finish, THEN move to next question
+    speakText(result.reaction, () => {
+      setTimeout(askNext, 1200);
+    });
   }
 
   function updateStress(val) {
