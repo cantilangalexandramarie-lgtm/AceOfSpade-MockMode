@@ -315,6 +315,7 @@
 </div>
 
 <!-- Your existing AI module — same path as the real pages use -->
+<script src="assets/js/main.js"></script>
 <script src="assets/js/ai.js"></script>
 
 <script>
@@ -336,10 +337,16 @@
   let QUESTIONS = [];
   let scores    = [];
 
-  // Pull from localStorage (set by upload.js) — fallback only if nothing saved yet
-  const RESUME      = localStorage.getItem('resume')      || 'Experienced software developer with full stack skills.';
-  const PERSONALITY = localStorage.getItem('personality') || 'technical';
-  const ROLE        = localStorage.getItem('role')        || 'developer';
+  // Use main.js getFromStorage — reads mm_ prefixed keys automatically
+  const RESUME      = getFromStorage('resume');
+  const PERSONALITY = getFromStorage('personality') || 'technical';
+  const ROLE        = getFromStorage('role')        || 'developer';
+
+  if (!RESUME) {
+    console.warn('[MockMode] No resume found. Go through upload.html first.');
+  } else {
+    console.log('[MockMode] Resume loaded (' + RESUME.length + ' chars), personality: ' + PERSONALITY + ', role: ' + ROLE);
+  }
 
   // ── Web Speech API ────────────────────────────────────────────────────────
   const synth = window.speechSynthesis;
@@ -392,6 +399,17 @@
 
     statusEl.textContent = 'LOADING AI...';
 
+    if (!RESUME) {
+      // No resume — show a message and stop
+      splashEl.style.display = 'flex';
+      btn.disabled = false;
+      btn.textContent = '▶ BEGIN INTERVIEW';
+      document.querySelector('#splash p').innerHTML =
+        '⚠️ No resume found.<br>Go through <strong>upload.html</strong> first, then come back.<br><br>' +
+        'Or paste your resume into the console:<br><code>localStorage.setItem("mm_resume", JSON.stringify("your resume text here"))</code>';
+      return;
+    }
+
     try {
       // Use your existing generateQuestions from assets/js/ai.js
       QUESTIONS = await generateQuestions(RESUME, PERSONALITY, ROLE);
@@ -399,11 +417,11 @@
     } catch (e) {
       console.warn('generateQuestions failed, using fallback', e);
       QUESTIONS = [
-        "Walk me through the last production bug you fixed.",
-        "You have an O(n²) algorithm in a hot path. How do you optimize it?",
-        "Your teammate pushed broken code to main at 11pm. What do you do?",
-        "Explain the difference between concurrency and parallelism.",
-        "Why did you choose that tech stack? What would you change now?",
+        "Walk me through your most recent project and your role in it.",
+        "What's the hardest technical problem you've solved, and how?",
+        "How do you approach debugging something you've never seen before?",
+        "Tell me about a time you disagreed with a teammate. What happened?",
+        "Where do you see yourself in 3 years?",
       ];
     }
 
