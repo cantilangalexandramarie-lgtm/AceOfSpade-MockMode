@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;800&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                "background": "#1f0f0c",
+                "surface": "#2a1f1a",
+                "on-surface": "#fcf9f8",
+                "primary": "#669BBC",
+                "on-primary": "#ffffff",
+                "secondary": "#a0522d",
+                "tertiary": "#d2b48c",
+                "on-tertiary": "#1f0f0c",
+                "surface-container": "#281714",
+                "outline": "#493431",
+                "error": "#ff4b2b"
+            },
+            "borderRadius": {
+                "none": "0",
+                "DEFAULT": "0",
+                "lg": "0",
+                "xl": "0",
+                "full": "0"
+            },
+            "spacing": {
+                "md": "16px",
+                "sm": "8px",
+                "unit": "8px",
+                "xs": "4px",
+                "lg": "24px",
+                "xl": "40px",
+                "gutter": "24px",
+                "container-max": "1200px"
+            },
+            "fontFamily": {
+                "headline-xl": ["Space Grotesk", "sans-serif"],
+                "headline-lg": ["Space Grotesk", "sans-serif"],
+                "headline-md": ["Space Grotesk", "sans-serif"],
+                "body-lg": ["Space Grotesk", "sans-serif"],
+                "body-md": ["Space Grotesk", "sans-serif"],
+                "label-bold": ["Space Grotesk", "sans-serif"]
+            },
+            "fontSize": {
+                "headline-xl": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                "headline-lg": ["32px", {"lineHeight": "1.2", "fontWeight": "800"}],
+                "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "700"}],
+                "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "500"}],
+                "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "500"}],
+                "label-bold": ["14px", {"lineHeight": "1.0", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .pixel-border {
+            border: 4px solid #190a08;
+            box-shadow: 
+                inset -4px -4px 0px 0px rgba(0,0,0,0.2),
+                inset 4px 4px 0px 0px rgba(255,255,255,0.1);
+        }
+        .arcade-button {
+            transition: all 0.05s steps(2);
+            box-shadow: 0 8px 0 0 #190a08;
+            position: relative;
+            image-rendering: pixelated;
+        }
+        .arcade-button:active {
+            transform: translateY(4px);
+            box-shadow: 0 4px 0 0 #190a08;
+        }
+        .scanline-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                rgba(18, 16, 16, 0) 50%,
+                rgba(0, 0, 0, 0.1) 50%
+            );
+            background-size: 100% 4px;
+            z-index: 50;
+            pointer-events: none;
+            opacity: 0.3;
+        }
+        .isometric-desk {
+            transform: perspective(2000px) rotateX(10deg);
+        }
+        .inner-recess {
+            box-shadow: inset 4px 4px 0px rgba(0,0,0,0.4);
+        }
+        .character-card {
+            transition: transform 0.1s steps(4);
+        }
+        .character-card:hover {
+            transform: translateY(-4px);
+        }
+        .crt-glow {
+            text-shadow: 0 0 10px rgba(102, 155, 188, 0.5);
+        }
+        body::before {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: radial-gradient(circle, transparent 20%, #000 150%);
+            z-index: 40;
+            pointer-events: none;
+            opacity: 0.4;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md min-h-screen py-xl selection:bg-primary selection:text-white">
+<div class="scanline-overlay"></div>
+<main class="max-w-6xl mx-auto px-gutter space-y-xl relative z-10">
+<!-- Header Text Section -->
+<div class="text-center space-y-sm">
+<h1 class="font-headline-xl text-primary crt-glow uppercase tracking-widest">THE DESK</h1>
+<p class="font-body-lg text-tertiary/80 uppercase text-sm tracking-widest">Configure dossier // Select Arbiter</p>
+</div>
+<!-- Integrated Vertical/Isometric Layout -->
+<div class="flex flex-col items-center gap-xl">
+<!-- Top Section: Character Selection -->
+<div class="w-full">
+<div class="bg-surface pixel-border p-lg shadow-[8px_8px_0_0_#190a08]">
+<div class="flex items-center justify-between mb-lg border-b-2 border-outline pb-4">
+<h2 class="font-headline-md text-primary flex items-center gap-2 uppercase tracking-tight">
+<span class="material-symbols-outlined text-3xl">person_search</span> Pick Your Fate
+                        </h2>
+<span class="text-[10px] font-label-bold bg-primary text-on-primary px-3 py-1 uppercase tracking-widest">Select Candidate</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-lg">
+<!-- Strict Character -->
+<div class="character-card group flex flex-col items-center text-center gap-md p-lg bg-surface-container pixel-border hover:bg-outline/50 cursor-pointer">
+<div class="relative w-24 h-24 pixel-border overflow-hidden bg-background shrink-0 shadow-[4px_4px_0_0_#190a08]">
+<img class="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all" data-alt="Strict office manager illustration" src="https://lh3.googleusercontent.com/aida/ADBb0ugex1dnDlz6S9fYFOU5rv93Xh6jJFs8zxBLz63pNT1n7JjzZg4lgbSEK9kubvQNOtWjpHF7-EB5rg0nlukGh7owKl3E7bL-N3Tj1i5w5awzuAIgG6qPodw-uOq_op8wH3EilMT7WWcZGtX_NMjz_fRmaIVMXahay8uNJ9IZ4Zfn1On-gc6NTAVJzzJ3fTJ9ZY1_NJKyi2PbtW2eXL2H3C3DeBRI1ga_AQ4EqPZm_I-CLOnsG90gj2jJhIxdbzqQBXABaVUmgGVsets"/>
+</div>
+<div>
+<h3 class="font-headline-md text-tertiary uppercase text-lg">Strict</h3>
+<p class="text-[10px] text-tertiary/60 font-bold uppercase tracking-widest">Protocol / Efficiency</p>
+</div>
+</div>
+<!-- Chill Character (Selected) -->
+<div class="character-card group flex flex-col items-center text-center gap-md p-lg bg-primary/20 pixel-border border-primary shadow-[4px_4px_0_0_#190a08] cursor-pointer">
+<div class="relative w-24 h-24 pixel-border overflow-hidden bg-background shrink-0 shadow-[4px_4px_0_0_#190a08]">
+<img class="w-full h-full object-cover" data-alt="Chill creative director illustration" src="https://lh3.googleusercontent.com/aida/ADBb0uiIg8fQtF_J1KqdCQK2ot7JYj-BmK7ywKUkVDq6If8en7IV7J9iAWiXhpDm5iujytcvscROUWXBm0XSSYD1JY-hMx_5yoaj6Ubzd3kgK0KT1qQfSpaMC76vO7sZJzm0lRETTspi1tvjPBszPw8oW9xypIlqghwi5jN9FEX_6xjo-Ui-iRihhJawpkmZ80cxl4pcjdCXCTY1s1zYCZ5g7y1bcNoZw5MLw8RGQVTckVkC7-P59lJWGBNMeXNxIj0pUKvmqpOaoJhpdw"/>
+</div>
+<div>
+<h3 class="font-headline-md text-primary uppercase text-lg">Chill</h3>
+<p class="text-[10px] text-primary/80 font-bold uppercase tracking-widest">Vibe / Culture</p>
+</div>
+<div class="absolute -top-2 -right-2 bg-primary text-on-primary w-6 h-6 flex items-center justify-center pixel-border">
+<span class="material-symbols-outlined text-xs">check</span>
+</div>
+</div>
+<!-- Tough Character -->
+<div class="character-card group flex flex-col items-center text-center gap-md p-lg bg-surface-container pixel-border hover:bg-outline/50 cursor-pointer">
+<div class="relative w-24 h-24 pixel-border overflow-hidden bg-background shrink-0 shadow-[4px_4px_0_0_#190a08]">
+<div class="w-full h-full flex items-center justify-center bg-outline/20">
+<span class="material-symbols-outlined text-5xl text-tertiary">psychology</span>
+</div>
+</div>
+<div>
+<h3 class="font-headline-md text-tertiary uppercase text-lg">Tough</h3>
+<p class="text-[10px] text-tertiary/60 font-bold uppercase tracking-widest">Logic / Stress</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Middle Section: The Dossier -->
+<div class="w-full max-w-4xl isometric-desk">
+<div class="relative w-full h-[500px]">
+<!-- Folder Interface -->
+<div class="absolute inset-0 bg-surface pixel-border shadow-[12px_12px_0_0_#190a08] flex flex-col overflow-hidden">
+<div class="h-10 bg-surface-container border-b-4 border-[#190a08] flex items-center px-lg">
+<div class="flex gap-2 mr-6">
+<div class="w-3 h-3 bg-error pixel-border"></div>
+<div class="w-3 h-3 bg-primary pixel-border"></div>
+</div>
+<div class="flex-grow">
+<span class="font-label-bold text-tertiary uppercase tracking-[0.2em] text-[10px]">Project Dossier // ID_404</span>
+</div>
+<span class="material-symbols-outlined text-primary text-sm">terminal</span>
+</div>
+<div class="flex-grow p-xl m-4 pixel-border flex flex-col overflow-hidden bg-white">
+<div class="flex items-center justify-between mb-md">
+<label class="font-label-bold uppercase text-xs tracking-widest text-background">Input Credentials:</label>
+<span class="text-[10px] font-mono animate-pulse text-background/60">REC_ACTIVE...</span>
+</div>
+<textarea class="flex-grow bg-transparent p-lg border-none focus:ring-0 font-body-md resize-none text-lg leading-relaxed uppercase tracking-tight text-background placeholder-background/40" placeholder="Tell your story... describe the battles."></textarea>
+</div>
+<div class="h-16 flex items-center justify-center px-lg pb-4">
+<div class="flex items-center gap-md bg-surface-container px-lg py-2 pixel-border border-dashed border-primary/50 cursor-pointer hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined text-primary text-xl">upload_file</span>
+<span class="text-[10px] font-black text-primary uppercase tracking-widest">Drop Artifact (DAT/PKG)</span>
+</div>
+</div>
+</div>
+<!-- Status Sticker -->
+<div class="absolute -top-4 -right-4 w-24 h-24 bg-secondary pixel-border flex items-center justify-center -rotate-6 shadow-[4px_4px_0_0_#190a08] hover:scale-110 transition-transform cursor-default">
+<span class="font-black text-on-primary text-center leading-none text-lg uppercase italic tracking-tighter">HIRE<br/>ME</span>
+</div>
+</div>
+</div>
+<!-- Bottom Section: Arcade Buttons -->
+<div class="flex flex-col sm:flex-row items-center justify-center gap-xl w-full pt-lg">
+<button class="arcade-button w-full sm:w-64 px-lg py-5 bg-surface-container pixel-border text-tertiary font-headline-md uppercase tracking-widest flex items-center justify-center gap-3">
+<span class="material-symbols-outlined">delete</span> Scrap It
+                </button>
+<button class="arcade-button w-full sm:w-72 px-lg py-5 bg-primary pixel-border text-on-primary font-headline-md uppercase tracking-widest flex items-center justify-center gap-3">
+                    Send to Boss <span class="material-symbols-outlined">rocket</span>
+</button>
+</div>
+</div>
+</main>
+</body></html>

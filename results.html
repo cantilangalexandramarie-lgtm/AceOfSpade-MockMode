@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TERMINAL_v1.0.4 - Debrief</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;700;900&amp;family=Be+Vietnam+Pro:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .pixel-scanline {
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 4px, 3px 100%;
+            pointer-events: none;
+        }
+        .pixel-dither {
+            background-image: radial-gradient(#1A0F0D 1px, transparent 0);
+            background-size: 4px 4px;
+        }
+        .crt-flicker {
+            animation: flicker 0.15s infinite;
+        }
+        @keyframes flicker {
+            0% { opacity: 0.97; }
+            50% { opacity: 1; }
+            100% { opacity: 0.98; }
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-lowest": "#190a08",
+                        "on-secondary-container": "#c1b8a1",
+                        "tertiary-fixed": "#bbeceb",
+                        "surface-dim": "#1f0f0c",
+                        "on-primary": "#442925",
+                        "surface-container-highest": "#44302c",
+                        "on-secondary": "#35301f",
+                        "on-tertiary-fixed": "#002020",
+                        "surface-tint": "#e7bdb6",
+                        "on-tertiary": "#003737",
+                        "tertiary-fixed-dim": "#a0cfcf",
+                        "inverse-on-surface": "#402b28",
+                        "on-primary-fixed": "#2c1511",
+                        "primary-fixed": "#ffdad4",
+                        "on-error": "#690005",
+                        "on-surface-variant": "#d4c3c0",
+                        "on-primary-container": "#d4aba4",
+                        "surface": "#1f0f0c",
+                        "tertiary-container": "#1d4d4d",
+                        "tertiary": "#a0cfcf",
+                        "inverse-surface": "#fcdbd6",
+                        "on-tertiary-container": "#8ebdbc",
+                        "secondary-fixed-dim": "#cfc6ae",
+                        "secondary-fixed": "#ece2c9",
+                        "outline": "#9d8d8b",
+                        "secondary-container": "#4f4936",
+                        "on-background": "#fcdbd6",
+                        "on-secondary-fixed-variant": "#4c4634",
+                        "surface-container-high": "#382522",
+                        "inverse-primary": "#775651",
+                        "background": "#1f0f0c",
+                        "surface-container-low": "#281714",
+                        "surface-variant": "#44302c",
+                        "on-surface": "#fcdbd6",
+                        "on-secondary-fixed": "#201b0c",
+                        "outline-variant": "#504442",
+                        "surface-container": "#2d1b18",
+                        "primary": "#e7bdb6",
+                        "surface-bright": "#493431",
+                        "primary-container": "#5d3f3a",
+                        "on-error-container": "#ffdad6",
+                        "on-primary-fixed-variant": "#5d3f3a",
+                        "secondary": "#cfc6ae",
+                        "error": "#ffb4ab",
+                        "error-container": "#93000a",
+                        "on-tertiary-fixed-variant": "#1e4e4e",
+                        "primary-fixed-dim": "#e7bdb6"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "lg": "32px",
+                        "gutter": "16px",
+                        "margin": "24px",
+                        "xl": "64px",
+                        "unit": "4px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "xs": "4px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Space Grotesk"],
+                        "body-md": ["Be Vietnam Pro"],
+                        "headline-lg": ["Space Grotesk"],
+                        "body-lg": ["Be Vietnam Pro"],
+                        "label-caps": ["Space Grotesk"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "label-caps": ["14px", {"lineHeight": "1", "letterSpacing": "0.1em", "fontWeight": "700"}]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface font-body-md selection:bg-tertiary selection:text-surface min-h-screen">
+<!-- TopAppBar -->
+<main class="relative max-w-6xl mx-auto px-margin py-xl space-y-lg pb-[120px]">
+<!-- Pixel Particle Background Layer -->
+<div class="absolute inset-0 pixel-dither opacity-10 pointer-events-none"></div>
+<div class="absolute inset-0 pixel-scanline opacity-20 pointer-events-none"></div>
+<!-- Row 1: Terminal Header -->
+<div class="flex justify-between items-center border-l-4 border-tertiary pl-4">
+<h1 class="font-headline-md text-headline-md text-tertiary tracking-widest uppercase">TERMINAL_OUTPUT_v.4.02</h1>
+<p class="font-label-caps text-label-caps text-outline opacity-70">SESSION_ID: 8829-X</p>
+</div>
+<!-- Row 2: Main Panel (Bento-style Grid) -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Left: Character Portrait -->
+<div class="lg:col-span-4 bg-surface-container border-4 border-surface-container-highest shadow-[4px_4px_0_0_#1A0F0D] relative overflow-hidden group p-md min-h-[500px] flex flex-col">
+<div class="absolute top-2 left-2 z-10 font-label-caps text-[10px] bg-tertiary text-surface px-1">BIO_SCAN: ACTIVE</div>
+<img class="w-full h-full object-cover grayscale brightness-75 group-hover:grayscale-0 transition-all duration-500 border-2 border-surface-container-highest" data-alt="A pixel-art style character portrait of a professional operative with a calm expression, wearing high-tech tactical gear and a glowing communications headset. The aesthetic is warm and retro, utilizing deep browns and vibrant teal highlights. The lighting mimics a 16-bit computer monitor with visible dither patterns and subtle scanlines, evoking a mid-90s indie game atmosphere." src="https://lh3.googleusercontent.com/aida/ADBb0ugDlvR1vyuSZB3tffgLz2e8W3fwdsdgSelNhQGRl2crgkvgj2TqfODvjOxOgJ7z0radSKrZf-amYvyGRwLa8RyMd-oTl2lbfNtBPQfyv_UVKi_ZYud8nmtK9LT4Cv4L0UctUr0W5NoLvXUZ9d9-vq2joBlYv6XH9f9MNhVk6PtIUhBjufNWPK3Z85wi6OXUG04lBkCk5dW0j3Rv4-okVN6_dFmxvxIQk_rMTjrCwcs1vPccUoKrXcX0lU-b"/>
+<div class="absolute bottom-4 left-4 right-4 bg-surface-container-low/90 p-md border-t-4 border-tertiary">
+<p class="font-headline-md text-headline-md text-on-surface">RECRUIT_#7721</p>
+<p class="font-label-caps text-label-caps text-tertiary">STATUS: VALIDATED</p>
+</div>
+<div class="absolute bottom-16 left-1/2 -translate-x-1/2 -rotate-12 z-20 border-[8px] border-tertiary px-4 py-2 opacity-90 pointer-events-none">
+<span class="text-6xl font-black text-tertiary tracking-tighter leading-none block uppercase font-['Space_Grotesk']" style="text-shadow: 0 0 16px rgba(160,207,207,0.5)">HIRED</span>
+</div></div>
+<!-- Right: HIRED Stamp & Efficiency Matrix -->
+<div class="lg:col-span-8 flex flex-col gap-gutter">
+<div class="bg-surface-container border-4 border-surface-container-highest shadow-[4px_4px_0_0_#1A0F0D] flex gap-lg items-center flex-1 p-lg">
+<div class="shrink-0 relative" style="width:220px;height:220px;">
+<svg width="220" height="220" viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
+      <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Pentagon points at 5 levels, top point = 270deg, going clockwise -->
+  <!-- Angles: top=270, top-right=342, bottom-right=54, bottom-left=126, top-left=198 -->
+  <!-- cx=110, cy=110, full radius=80 -->
+
+  <!-- Level 5 (outermost) -->
+  <polygon points="110,30 185.6,84.6 157.6,174.6 62.4,174.6 34.4,84.6"
+    fill="#2a1f1a" stroke="rgba(160,207,207,0.35)" stroke-width="1.5"/>
+  <!-- Level 4 -->
+  <polygon points="110,46 171.5,93.7 147.1,167.7 72.9,167.7 48.5,93.7"
+    fill="none" stroke="rgba(160,207,207,0.22)" stroke-width="1"/>
+  <!-- Level 3 -->
+  <polygon points="110,62 157.4,102.8 136.6,160.8 83.4,160.8 62.6,102.8"
+    fill="none" stroke="rgba(160,207,207,0.18)" stroke-width="1"/>
+  <!-- Level 2 -->
+  <polygon points="110,78 143.3,111.9 126.1,153.9 93.9,153.9 76.7,111.9"
+    fill="none" stroke="rgba(160,207,207,0.14)" stroke-width="1"/>
+  <!-- Level 1 (innermost) -->
+  <polygon points="110,94 129.2,121 115.6,147 104.4,147 90.8,121"
+    fill="none" stroke="rgba(160,207,207,0.10)" stroke-width="1"/>
+
+  <!-- Axis spokes from center to each outer point -->
+  <line x1="110" y1="110" x2="110" y2="30"   stroke="rgba(160,207,207,0.2)" stroke-width="1"/>
+  <line x1="110" y1="110" x2="185.6" y2="84.6" stroke="rgba(160,207,207,0.2)" stroke-width="1"/>
+  <line x1="110" y1="110" x2="157.6" y2="174.6" stroke="rgba(160,207,207,0.2)" stroke-width="1"/>
+  <line x1="110" y1="110" x2="62.4" y2="174.6" stroke="rgba(160,207,207,0.2)" stroke-width="1"/>
+  <line x1="110" y1="110" x2="34.4" y2="84.6" stroke="rgba(160,207,207,0.2)" stroke-width="1"/>
+
+  <!-- Data polygon — values: LOGIC 98%, SPEED 75%, ACCURACY 60%, ETHICS 85%, STAMINA 70% -->
+  <!-- Scaled from center (110,110): top(98%)=110,33 | tr(75%)=163,91 | br(60%)=148,162 | bl(85%)=69,162 | tl(70%)=46,91 -->
+  <polygon points="110,33 163,91 148,162 69,162 46,91"
+    fill="rgba(160,207,207,0.18)" stroke="#a0cfcf" stroke-width="2"
+    filter="url(#glow)"/>
+
+  <!-- Data point dots -->
+  <circle cx="110" cy="33"  r="4" fill="#a0cfcf" filter="url(#glow)"/>
+  <circle cx="163" cy="91"  r="4" fill="#a0cfcf" filter="url(#glow)"/>
+  <circle cx="148" cy="162" r="4" fill="#a0cfcf" filter="url(#glow)"/>
+  <circle cx="69"  cy="162" r="4" fill="#a0cfcf" filter="url(#glow)"/>
+  <circle cx="46"  cy="91"  r="4" fill="#a0cfcf" filter="url(#glow)"/>
+
+  <!-- Icon circles at each axis tip -->
+  <!-- Top: LOGIC -->
+  <circle cx="110" cy="15" r="12" fill="#2a1f1a" stroke="#a0cfcf" stroke-width="2"/>
+  <text x="110" y="19" text-anchor="middle" fill="#a0cfcf" font-size="11" font-family="Space Grotesk" font-weight="900">L</text>
+
+  <!-- Top-right: SPEED -->
+  <circle cx="197" cy="80" r="12" fill="#2a1f1a" stroke="#a0cfcf" stroke-width="2"/>
+  <text x="197" y="84" text-anchor="middle" fill="#a0cfcf" font-size="11" font-family="Space Grotesk" font-weight="900">S</text>
+
+  <!-- Bottom-right: ACCURACY -->
+  <circle cx="170" cy="188" r="12" fill="#2a1f1a" stroke="#a0cfcf" stroke-width="2"/>
+  <text x="170" y="192" text-anchor="middle" fill="#a0cfcf" font-size="11" font-family="Space Grotesk" font-weight="900">A</text>
+
+  <!-- Bottom-left: ETHICS -->
+  <circle cx="50" cy="188" r="12" fill="#2a1f1a" stroke="#a0cfcf" stroke-width="2"/>
+  <text x="50" y="192" text-anchor="middle" fill="#a0cfcf" font-size="11" font-family="Space Grotesk" font-weight="900">E</text>
+
+  <!-- Top-left: STAMINA -->
+  <circle cx="23" cy="80" r="12" fill="#2a1f1a" stroke="#a0cfcf" stroke-width="2"/>
+  <text x="23" y="84" text-anchor="middle" fill="#a0cfcf" font-size="11" font-family="Space Grotesk" font-weight="900">St</text>
+</svg>
+</div>
+<div class="flex-1 space-y-xs">
+<p class="font-label-caps text-label-caps text-tertiary">EFFICIENCY_MATRIX</p>
+<div class="space-y-unit">
+<div class="flex justify-between text-xs font-headline-md"><span class="text-on-surface-variant">LOGIC</span><span class="text-tertiary">98%</span></div>
+<div class="w-full h-2 bg-surface-container-highest"><div class="bg-tertiary h-full w-[98%] shadow-[0_0_8px_#669BBC]"></div></div>
+<div class="flex justify-between text-xs font-headline-md mt-2"><span class="text-on-surface-variant">STAMINA</span><span class="text-tertiary">84%</span></div>
+<div class="w-full h-2 bg-surface-container-highest"><div class="bg-tertiary h-full w-[84%] shadow-[0_0_8px_#669BBC]"></div></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Row 3: Compensation Package -->
+<section class="space-y-md">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-tertiary">payments</span>
+<h2 class="font-headline-md text-headline-md text-on-surface uppercase tracking-tight">COMPENSATION_PACKAGE</h2>
+<div class="flex-1 h-1 bg-surface-container-highest"></div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<!-- Offer Letter -->
+<div class="bg-[#ECE2C9] border-4 border-[#4F4936] p-md flex flex-col gap-sm shadow-[4px_4px_0_0_#1A0F0D] hover:translate-y-[-4px] transition-transform">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-[#35301F] text-3xl">assignment_turned_in</span>
+<div class="bg-[#35301F] text-[#ECE2C9] px-2 py-0.5 text-[10px] font-label-caps uppercase">SIGNED</div>
+</div>
+<p class="font-headline-md text-headline-md text-[#35301F]">Offer Letter</p>
+<p class="text-xs text-[#4C4634] leading-tight font-body-md">Legally binding employment agreement across all sectors and sub-terminal layers.</p>
+</div>
+<!-- Access Card -->
+<div class="bg-surface-container border-4 border-tertiary p-md flex flex-col gap-sm shadow-[4px_4px_0_0_#1A0F0D] hover:translate-y-[-4px] transition-transform">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-tertiary text-3xl">badge</span>
+<div class="bg-tertiary text-surface px-2 py-0.5 text-[10px] font-label-caps uppercase">ISSUED</div>
+</div>
+<p class="font-headline-md text-headline-md text-on-surface">Lv1 Access Card</p>
+<p class="text-xs text-on-surface-variant leading-tight font-body-md">Clearance for standard cafeteria, dormitory, and core terminal facilities.</p>
+</div>
+<!-- Perks -->
+<div class="bg-surface-container-low border-4 border-surface-container-highest p-md flex flex-col gap-sm shadow-[4px_4px_0_0_#1A0F0D] opacity-60">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-outline-variant text-3xl">coffee</span>
+<div class="bg-surface-container-highest text-outline px-2 py-0.5 text-[10px] font-label-caps uppercase">PENDING</div>
+</div>
+<p class="font-headline-md text-headline-md text-outline">Unlimited Caffeine</p>
+<p class="text-xs text-outline-variant leading-tight font-body-md">Subject to availability at regional hub dispensers and supply chain stability.</p>
+</div>
+</div>
+</section>
+<!-- Confetti Elements (Static Layout) -->
+<div class="fixed top-1/4 left-1/4 rotate-12 bg-tertiary h-2 w-2 opacity-50"></div>
+<div class="fixed top-1/3 right-1/4 -rotate-45 bg-[#ECE2C9] h-3 w-3 opacity-50"></div>
+<div class="fixed bottom-1/4 left-1/3 rotate-90 bg-tertiary h-1 w-4 opacity-50"></div>
+<div class="fixed bottom-1/3 right-1/3 -rotate-12 bg-error h-2 w-2 opacity-40"></div>
+
+<!-- Action Buttons — inline, scroll to reach -->
+<div class="flex justify-center gap-8 pt-md pb-xl">
+    <button class="flex items-center gap-3 px-8 py-3 bg-[#669BBC] text-[#2D1B18] shadow-[4px_4px_0_0_#1A0F0D] font-['Space_Grotesk'] font-bold text-sm active:translate-x-1 active:translate-y-1 active:shadow-none transition-none hover:opacity-90">
+        <span class="material-symbols-outlined">refresh</span>
+        NEW GAME
+    </button>
+    <button class="flex items-center gap-3 px-8 py-3 bg-[#5D3F3A] text-[#ECE2C9] shadow-[4px_4px_0_0_#1A0F0D] hover:bg-[#669BBC] hover:text-[#2D1B18] font-['Space_Grotesk'] font-bold text-sm active:translate-x-1 active:translate-y-1 active:shadow-none transition-none">
+        <span class="material-symbols-outlined">file_download</span>
+        EXPORT LEDGER
+    </button>
+</div>
+</main>
+<!-- UI Overlays for aesthetic depth -->
+<div class="fixed top-0 left-0 w-full h-full border-[12px] border-surface-container-lowest/50 pointer-events-none z-[100]"></div>
+<div class="fixed inset-0 pointer-events-none z-[101] bg-gradient-to-b from-transparent via-tertiary/5 to-transparent h-20 w-full -translate-y-full opacity-10 animate-scanline"></div>
+<style>
+        @keyframes scanline {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100vh); }
+        }
+        .animate-scanline {
+            animation: scanline 8s linear infinite;
+        }
+    </style>
+</body>
+</html>
