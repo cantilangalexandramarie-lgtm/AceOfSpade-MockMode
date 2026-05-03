@@ -66,7 +66,6 @@
 <div class="section">
   <div class="section-title">1. Groq + Gemini via Vercel Serverless</div>
   <label>Proxy URL (Vercel serverless function)</label>
-  <!-- Points to /api/ai — works locally with `vercel dev` and on deployed Vercel -->
   <input type="text" id="proxyUrl" value="/api/ai" />
   <label>Test Prompt</label>
   <textarea id="prompt">You are a hiring manager. Return ONLY a JSON object: {"question": "one interview question", "difficulty": "easy|medium|hard"}</textarea>
@@ -90,9 +89,26 @@
   </div>
 </div>
 
+<!-- STREAMING TEST -->
+<div class="section">
+  <div class="section-title">2. Streaming AI (typing effect)</div>
+  <label>Streaming Prompt</label>
+  <textarea id="streamPrompt">You are a strict corporate hiring manager. Tell me why I should hire you in 2 sentences. Be dramatic.</textarea>
+  <div class="btn-row">
+    <button class="btn-groq" id="btnStream" onclick="runStream()">Test Stream</button>
+  </div>
+  <div class="result" id="streamResult" style="display:none;">
+    <div class="result-header">
+      <span class="badge loading" id="streamBadge">streaming...</span>
+      <span class="timing" id="streamTime"></span>
+    </div>
+    <pre id="streamOut" style="color:#6fcf6f; min-height: 40px;"></pre>
+  </div>
+</div>
+
 <!-- BROWSER APIS -->
 <div class="section">
-  <div class="section-title">2. Browser APIs</div>
+  <div class="section-title">3. Browser APIs</div>
 
   <div class="check-row">
     <div class="dot loading" id="dotSpeechOut"></div>
@@ -123,7 +139,7 @@
 
 <!-- LIBRARIES -->
 <div class="section">
-  <div class="section-title">3. Libraries (CDN)</div>
+  <div class="section-title">4. Libraries (CDN)</div>
   <div class="check-row">
     <div class="dot" id="dotChart"></div>
     <div class="check-label">Chart.js</div>
@@ -145,7 +161,7 @@
 
 <!-- LOCALSTORAGE -->
 <div class="section">
-  <div class="section-title">4. localStorage (session data between pages)</div>
+  <div class="section-title">5. localStorage (session data between pages)</div>
   <div class="storage-row">
     <input type="text" id="lsKey" placeholder="key e.g. resumeText" />
     <input type="text" id="lsVal" placeholder="value e.g. John CS student" />
@@ -161,7 +177,6 @@
 </div>
 
 <script>
-// ── AI ────────────────────────────────────────────────
 async function runAI(provider) {
   const url = document.getElementById('proxyUrl').value.trim();
   const prompt = document.getElementById('prompt').value.trim();
@@ -204,7 +219,6 @@ async function runAI(provider) {
   btnEl.disabled = false;
 }
 
-// ── SPEECH OUTPUT ─────────────────────────────────────
 function testSpeechOut() {
   const dot = document.getElementById('dotSpeechOut');
   if (!('speechSynthesis' in window)) {
@@ -217,7 +231,6 @@ function testSpeechOut() {
   speechSynthesis.speak(u);
 }
 
-// ── SPEECH INPUT ──────────────────────────────────────
 let recognition = null;
 let isListening = false;
 
@@ -429,6 +442,74 @@ function lsGet() {
 function lsClear() {
   localStorage.clear();
   document.getElementById('lsOut').textContent = 'localStorage cleared.';
+}
+
+async function runStream() {
+  const url = document.getElementById('proxyUrl').value.trim();
+  const prompt = document.getElementById('streamPrompt').value.trim();
+  const resultEl = document.getElementById('streamResult');
+  const badgeEl = document.getElementById('streamBadge');
+  const outEl = document.getElementById('streamOut');
+  const timeEl = document.getElementById('streamTime');
+  const btnEl = document.getElementById('btnStream');
+
+  resultEl.style.display = 'block';
+  badgeEl.className = 'badge loading';
+  badgeEl.textContent = 'streaming...';
+  outEl.textContent = '';
+  timeEl.textContent = '';
+  btnEl.disabled = true;
+
+  const start = Date.now();
+
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        stream: true,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      const chunk = decoder.decode(value, { stream: true });
+      const lines = chunk.split('\n').filter(l => l.trim() !== '');
+
+      for (const line of lines) {
+        if (line.startsWith('data: ')) {
+          const data = line.slice(6);
+          if (data === '[DONE]') {
+            const ms = Date.now() - start;
+            badgeEl.className = 'badge ok';
+            badgeEl.textContent = 'stream complete';
+            timeEl.textContent = ms + 'ms';
+            btnEl.disabled = false;
+            continue;
+          }
+          try {
+            const parsed = JSON.parse(data);
+            if (parsed.token) outEl.textContent += parsed.token;
+            if (parsed.error) throw new Error(parsed.error);
+          } catch (e) { }
+        }
+      }
+    }
+
+  } catch (e) {
+    badgeEl.className = 'badge fail';
+    badgeEl.textContent = 'stream failed';
+    outEl.textContent = 'Error: ' + e.message;
+    btnEl.disabled = false;
+  }
 }
 </script>
 </body>

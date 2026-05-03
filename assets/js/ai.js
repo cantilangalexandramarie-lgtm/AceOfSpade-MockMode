@@ -21,6 +21,54 @@ async function askAI(messages, provider = 'groq') {
   }
 }
 
+
+async function askAIStream(messages, onChunk, onDone) {
+  try {
+    const response = await fetch(AI_PROXY_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages, stream: true })
+    });
+
+    if (!response.ok) throw new Error(`Stream error: ${response.status}`);
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      const chunk = decoder.decode(value, { stream: true });
+      const lines = chunk.split('\n').filter(line => line.trim() !== '');
+
+      for (const line of lines) {
+        if (line.startsWith('data: ')) {
+          const data = line.slice(6);
+          if (data === '[DONE]') {
+            if (onDone) onDone();
+            continue;
+          }
+          try {
+            const parsed = JSON.parse(data);
+            if (parsed.token && onChunk) {
+              onChunk(parsed.token);
+            }
+            if (parsed.error) {
+              throw new Error(parsed.error);
+            }
+          } catch (e) {
+          }
+        }
+      }
+    }
+
+  } catch (error) {
+    console.error('Stream failed:', error);
+    throw error;
+  }
+}
+
 function parseJSON(text) {
   try {
     const cleaned = text
@@ -112,6 +160,35 @@ async function evaluateAnswer(question, answer, personality) {
 
   const result = await askAI(messages);
   return parseJSON(result);
+}
+
+async function streamInterviewerMessage(prompt, personality, targetElement, onDone) {
+  const personalityPrompts = {
+    corporate: 'You are a strict, formal corporate hiring manager.',
+    startup: 'You are a chill startup founder.',
+    technical: 'You are a tough technical lead.'
+  };
+
+  const messages = [
+    {
+      role: 'system',
+      content: `${personalityPrompts[personality]} Respond in character in 1-2 sentences only.`
+    },
+    {
+      role: 'user',
+      content: prompt
+    }
+  ];
+
+  if (targetElement) targetElement.textContent = '';
+
+  await askAIStream(
+    messages,
+    (token) => {
+      if (targetElement) targetElement.textContent += token;
+    },
+    onDone
+  );
 }
 
 async function generateVerdict(scores, resumeAnalysis, personality) {

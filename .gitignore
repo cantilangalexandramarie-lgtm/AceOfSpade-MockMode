@@ -1,0 +1,25 @@
+# API Keys / Environment
+.env
+.env.local
+.env.production
+
+# Vercel
+.vercel
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+
+# Node
+node_modules/
+package-lock.json
+
+# Face API models (too large for GitHub)
+assets/models/
+
+# Logs
+*.log
