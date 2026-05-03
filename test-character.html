@@ -319,6 +319,26 @@
 <script src="assets/js/ai.js"></script>
 
 <script>
+  // Fallback definitions in case main.js path fails to resolve
+  if (typeof getFromStorage === 'undefined') {
+    console.warn('[MockMode] main.js not loaded — using inline fallbacks.');
+    window.getFromStorage = (key) => {
+      try { const r = localStorage.getItem(`mm_${key}`); return r !== null ? JSON.parse(r) : null; } catch { return null; }
+    };
+    window.saveToStorage = (key, value) => {
+      try { localStorage.setItem(`mm_${key}`, JSON.stringify(value)); } catch {}
+    };
+    window.showLoader = (msg) => { console.log('[loader]', msg); };
+    window.hideLoader = () => {};
+    window.showToast  = (msg, type) => { console.log(`[toast:${type}]`, msg); };
+    window.navigateTo = (page) => { window.location.href = page; };
+  }
+  if (typeof generateQuestions === 'undefined') {
+    console.warn('[MockMode] ai.js not loaded — AI calls will use fallback questions only.');
+  }
+</script>
+
+<script>
   // ── DOM ───────────────────────────────────────────────────────────────────
   const mouthEl    = document.getElementById('mouth');
   const dialogueEl = document.getElementById('dialogue-text');
@@ -338,15 +358,26 @@
   let scores    = [];
 
   // Use main.js getFromStorage — reads mm_ prefixed keys automatically
+  // If no resume in storage, inject a mock one so this test page works standalone
+  const MOCK_RESUME = `Jane Doe — Software Engineer
+  Skills: JavaScript, TypeScript, React, Node.js, Python, PostgreSQL, Docker, Git
+  Experience:
+    - Frontend Engineer at TechCorp (2022–present): Built React dashboards, improved page load by 40%, led a team of 3.
+    - Junior Developer at StartupXYZ (2020–2022): Full-stack PHP/MySQL, REST APIs, Agile sprints.
+  Education: BS Computer Science, State University, 2020
+  Projects: Open-source CLI tool (800+ GitHub stars), personal finance tracker app (React + Firebase)
+  Certifications: AWS Cloud Practitioner`;
+
+  if (!getFromStorage('resume')) {
+    saveToStorage('resume', MOCK_RESUME);
+    console.log('[MockMode] No resume found — injected mock resume for testing.');
+  }
+
   const RESUME      = getFromStorage('resume');
   const PERSONALITY = getFromStorage('personality') || 'technical';
   const ROLE        = getFromStorage('role')        || 'developer';
 
-  if (!RESUME) {
-    console.warn('[MockMode] No resume found. Go through upload.html first.');
-  } else {
-    console.log('[MockMode] Resume loaded (' + RESUME.length + ' chars), personality: ' + PERSONALITY + ', role: ' + ROLE);
-  }
+  console.log('[MockMode] Resume loaded (' + RESUME.length + ' chars), personality: ' + PERSONALITY + ', role: ' + ROLE);
 
   // ── Web Speech API ────────────────────────────────────────────────────────
   const synth = window.speechSynthesis;
@@ -398,17 +429,6 @@
     voice = pickVoice();
 
     statusEl.textContent = 'LOADING AI...';
-
-    if (!RESUME) {
-      // No resume — show a message and stop
-      splashEl.style.display = 'flex';
-      btn.disabled = false;
-      btn.textContent = '▶ BEGIN INTERVIEW';
-      document.querySelector('#splash p').innerHTML =
-        '⚠️ No resume found.<br>Go through <strong>upload.html</strong> first, then come back.<br><br>' +
-        'Or paste your resume into the console:<br><code>localStorage.setItem("mm_resume", JSON.stringify("your resume text here"))</code>';
-      return;
-    }
 
     try {
       // Use your existing generateQuestions from assets/js/ai.js
