@@ -388,7 +388,6 @@
         position: relative;
         z-index: 2;
     }
-    .boot-line.visible { opacity: 1; }
     .boot-line.dim     { color: #3d5a6e; }
     .boot-line.normal  { color: #7aafcc; }
     .boot-line.bright  { color: #a0cfcf; }
@@ -451,7 +450,7 @@
         height: 100%;
         width: 0%;
         background: linear-gradient(90deg, #1a4a6e, #669BBC, #a0cfcf);
-        transition: width 0.15s ease;
+        transition: width 0.4s ease;
         position: relative;
     }
     .loader-progress-fill::after {
@@ -869,44 +868,73 @@
 
         const LINES = [
             { text: 'HIRED_OR_FIRED.EXE  ──  INTERVIEW SIMULATION v1.0',   cls: 'title-line', delay: 0    },
-            { text: '─'.repeat(58),                                          cls: 'dim',        delay: 130  },
-            { text: 'Scanning candidate database...',                        cls: 'dim',        delay: 260  },
-            { text: 'RESUME_PARSER.DLL .................. [LOADED]',         cls: 'normal',     delay: 440  },
-            { text: 'INTERVIEW_ENGINE.SYS ............... [LOADED]',         cls: 'normal',     delay: 620  },
-            { text: 'STRESS_QUESTION_GEN.BIN ............ [LOADED]',         cls: 'normal',     delay: 800  },
-            { text: 'VERDICT_ALGORITHM.EXE .............. [LOADED]',         cls: 'normal',     delay: 980  },
-            { text: '',                                                        cls: 'dim',        delay: 1080 },
-            { text: 'Calibrating interviewer personas...',                    cls: 'dim',        delay: 1160 },
-            { text: '  > STRICT_CORPORATE_BOSS .......... [READY]',          cls: 'warn',       delay: 1300 },
-            { text: '  > CHILL_STARTUP_BRO .............. [READY]',          cls: 'warn',       delay: 1440 },
-            { text: '  > TECHNICAL_LEAD_9000 ............ [READY]',          cls: 'warn',       delay: 1580 },
-            { text: '',                                                        cls: 'dim',        delay: 1680 },
-            { text: 'Loading judgment protocols...',                          cls: 'dim',        delay: 1760 },
-            { text: '  HIRED threshold .................. 70 pts',            cls: 'success',    delay: 1900 },
-            { text: '  FIRED threshold .................. < 40 pts',          cls: 'error',      delay: 2040 },
-            { text: '',                                                        cls: 'dim',        delay: 2140 },
-            { text: 'WARNING: This interview will be graded.',                cls: 'error',      delay: 2220 },
-            { text: 'WARNING: There are no second chances.',                  cls: 'error',      delay: 2380 },
-            { text: '',                                                        cls: 'dim',        delay: 2480 },
-            { text: '▶  ENTER THE INTERVIEW ROOM. GOOD LUCK.',               cls: 'bright',     delay: 2600 },
+            { text: '─'.repeat(58),                                          cls: 'dim',        delay: 300  },
+            { text: 'Scanning candidate database...',                        cls: 'dim',        delay: 700  },
+            { text: 'RESUME_PARSER.DLL .................. [LOADED]',         cls: 'normal',     delay: 1200 },
+            { text: 'INTERVIEW_ENGINE.SYS ............... [LOADED]',         cls: 'normal',     delay: 1800 },
+            { text: 'STRESS_QUESTION_GEN.BIN ............ [LOADED]',         cls: 'normal',     delay: 2500 },
+            { text: 'VERDICT_ALGORITHM.EXE .............. [LOADED]',         cls: 'normal',     delay: 3100 },
+            { text: '',                                                        cls: 'dim',        delay: 3400 },
+            { text: 'Calibrating interviewer personas...',                    cls: 'dim',        delay: 3800 },
+            { text: '  > STRICT_CORPORATE_BOSS .......... [READY]',          cls: 'warn',       delay: 4500 },
+            { text: '  > CHILL_STARTUP_BRO .............. ',                 cls: 'warn',       delay: 5400 },
+            { text: '  ERROR: Persona data corrupt. Retrying...',            cls: 'error',      delay: 6000 },
+            { text: '  > CHILL_STARTUP_BRO .............. [READY]',          cls: 'warn',       delay: 7200 },
+            { text: '  > TECHNICAL_LEAD_9000 ............ [READY]',          cls: 'warn',       delay: 8000 },
+            { text: '',                                                        cls: 'dim',        delay: 8400 },
+            { text: 'Loading judgment protocols...',                          cls: 'dim',        delay: 8900 },
+            { text: '  HIRED threshold .................. 70 pts',            cls: 'success',    delay: 9600 },
+            { text: '  FIRED threshold .................. < 40 pts',          cls: 'error',      delay: 10200},
+            { text: '',                                                        cls: 'dim',        delay: 10600},
+            { text: 'WARNING: This interview will be graded.',                cls: 'error',      delay: 11000},
+            { text: 'WARNING: There are no second chances.',                  cls: 'error',      delay: 11800},
+            { text: '',                                                        cls: 'dim',        delay: 12200},
+            { text: '▶  ENTER THE INTERVIEW ROOM. GOOD LUCK.',               cls: 'bright',     delay: 12700},
         ];
 
-        // Progress checkpoints keyed to line index
+        // Progress checkpoints — stalls between 58–72 to simulate hang
         const PROGRESS = {
-            0:  2,  2: 8,  3: 18, 4: 30, 5: 42,
-            6: 52,  8: 58, 9: 64, 10: 70, 11: 76,
-            13: 82, 14: 87, 15: 91, 17: 95, 18: 98, 20: 100
+            0:  2,  2: 8,  3: 18, 4: 32, 5: 44,
+            6: 55,  8: 58,
+            9: 60,           // crawls slowly here...
+            10: 61,          // stutter — barely moves
+            11: 62,          // error line — stuck
+            12: 63,          // retrying — still slow
+            13: 72,          // finally unstuck
+            15: 82, 16: 88, 17: 92, 18: 95, 20: 98, 22: 100
         };
 
         const STATUS_MAP = {
             0:  'BOOTING...',
             3:  'PARSING RESUME',
             5:  'LOADING ENGINE',
-            8:  'BUILDING BOSSES',
-            13: 'SETTING THRESHOLDS',
-            17: 'FINAL WARNINGS',
-            20: 'READY'
+            8:  'CALIBRATING...',
+            10: 'RETRYING...',
+            11: 'ERROR DETECTED',
+            12: 'RECOVERING...',
+            13: 'RESUMED',
+            15: 'THRESHOLDS SET',
+            19: 'FINAL WARNINGS',
+            22: 'READY'
         };
+
+        // Slowly crawl progress to a target over a duration
+        function crawlProgress(from, to, durationMs) {
+            return new Promise(resolve => {
+                const steps = Math.abs(to - from);
+                if (steps === 0) { resolve(); return; }
+                const interval = durationMs / steps;
+                let current = from;
+                const tick = setInterval(() => {
+                    current++;
+                    setProgress(current);
+                    if (current >= to) {
+                        clearInterval(tick);
+                        resolve();
+                    }
+                }, interval);
+            });
+        }
 
         let cursor = document.createElement('span');
         cursor.className = 'boot-cursor';
@@ -919,40 +947,60 @@
             cpuVal.textContent = String(target).padStart(2, '0');
         }
 
-        function revealLine(i) {
-            if (i >= LINES.length) {
-                // Short pause then glitch-exit
-                setTimeout(exitLoader, 480);
-                return;
-            }
-            const cfg  = LINES[i];
-            const line = document.createElement('div');
-            line.className = `boot-line ${cfg.cls}`;
+        function wait(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
 
-            if (i === LINES.length - 1) {
-                // Last line gets the cursor
+        function appendLine(cfg, isLast) {
+            return new Promise(resolve => {
+                const line = document.createElement('div');
+                line.className = `boot-line ${cfg.cls}`;
                 line.textContent = cfg.text;
-                line.appendChild(cursor);
-            } else {
-                line.textContent = cfg.text;
+                if (isLast) line.appendChild(cursor);
+
+                // Start invisible
+                line.style.opacity = '0';
+                line.style.transition = 'opacity 0.2s ease';
+                terminal.appendChild(line);
+                terminal.scrollTop = terminal.scrollHeight;
+
+                // Two rAF frames = browser has painted the invisible line,
+                // now trigger the fade-in
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        line.style.opacity = '1';
+                        resolve();
+                    });
+                });
+            });
+        }
+
+        async function runBootSequence() {
+            let lastProgress = 0;
+
+            for (let i = 0; i < LINES.length; i++) {
+                const cfg = LINES[i];
+                const gap = i === 0 ? 200 : (cfg.delay - LINES[i - 1].delay);
+                await wait(gap);
+
+                await appendLine(cfg, i === LINES.length - 1);
+
+                if (PROGRESS[i] !== undefined) {
+                    const target = PROGRESS[i];
+                    // Stall zone: crawl very slowly between 58–72
+                    if (lastProgress >= 55 && target <= 74) {
+                        await crawlProgress(lastProgress, target, (target - lastProgress) * 900);
+                    } else {
+                        setProgress(target);
+                    }
+                    lastProgress = PROGRESS[i];
+                }
+
+                if (STATUS_MAP[i]) status.textContent = STATUS_MAP[i];
             }
 
-            terminal.appendChild(line);
-            // Trigger visible on next frame
-            requestAnimationFrame(() => requestAnimationFrame(() => line.classList.add('visible')));
-
-            // Scroll terminal to bottom
-            terminal.scrollTop = terminal.scrollHeight;
-
-            // Update progress & status
-            if (PROGRESS[i] !== undefined) setProgress(PROGRESS[i]);
-            if (STATUS_MAP[i])             status.textContent = STATUS_MAP[i];
-
-            // Schedule next line
-            const nextDelay = i + 1 < LINES.length
-                ? LINES[i + 1].delay - cfg.delay
-                : 0;
-            setTimeout(() => revealLine(i + 1), nextDelay);
+            await wait(500);
+            exitLoader();
         }
 
         function exitLoader() {
@@ -1002,8 +1050,8 @@
             }, 350);       // initial pause
         }
 
-        // Kick off at first line's delay
-        setTimeout(() => revealLine(0), LINES[0].delay + 80);
+        // Kick off boot sequence
+        runBootSequence();
     })();
 </script>
 </body>
