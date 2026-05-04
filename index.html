@@ -306,6 +306,302 @@
         animation: scale-in 0.3s cubic-bezier(0.34,1.56,0.64,1) both;
     }
 
+    /* ══════════════════════════════════════
+       RETRO BOOT LOADER
+    ══════════════════════════════════════ */
+
+    #retro-loader {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        background: transparent;
+        pointer-events: none;
+        font-family: 'Space Grotesk', monospace;
+    }
+
+    .loader-inner {
+        position: relative;
+        z-index: 3;
+        width: min(640px, 92vw);
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+    }
+
+    /* Top chrome bar */
+    .loader-chrome {
+        background: #1a0f0c;
+        border: 2px solid #669BBC;
+        border-bottom: none;
+        padding: 6px 14px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .loader-chrome-title {
+        font-size: 11px;
+        letter-spacing: 0.15em;
+        color: #669BBC;
+        text-transform: uppercase;
+    }
+    .loader-chrome-dots {
+        display: flex;
+        gap: 6px;
+    }
+    .loader-chrome-dots span {
+        width: 8px; height: 8px;
+        border-radius: 50%;
+        display: inline-block;
+    }
+
+    /* Terminal body */
+    .loader-terminal {
+        background: #060201;
+        border: 2px solid #669BBC;
+        border-bottom: none;
+        padding: 24px 28px 20px;
+        min-height: 260px;
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        position: relative;
+    }
+
+    /* Scanline sweep inside terminal */
+    .loader-terminal::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 60px;
+        background: linear-gradient(to bottom, transparent, rgba(102,155,188,0.04), transparent);
+        animation: scanline-sweep 3s linear infinite;
+        pointer-events: none;
+        z-index: 1;
+    }
+
+    .boot-line {
+        font-size: 13px;
+        line-height: 1.9;
+        letter-spacing: 0.04em;
+        opacity: 0;
+        white-space: pre;
+        position: relative;
+        z-index: 2;
+    }
+    .boot-line.visible { opacity: 1; }
+    .boot-line.dim     { color: #3d5a6e; }
+    .boot-line.normal  { color: #7aafcc; }
+    .boot-line.bright  { color: #a0cfcf; }
+    .boot-line.warn    { color: #cfc6ae; }
+    .boot-line.success { color: #4ecf8a; }
+    .boot-line.error   { color: #e7bdb6; }
+    .boot-line.title-line {
+        color: #669BBC;
+        font-size: 15px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        margin-bottom: 4px;
+    }
+
+    /* Blinking cursor */
+    .boot-cursor {
+        display: inline-block;
+        width: 9px; height: 15px;
+        background: #669BBC;
+        vertical-align: middle;
+        margin-left: 4px;
+        animation: blink-cursor 0.9s step-end infinite;
+        position: relative;
+        z-index: 2;
+    }
+    @keyframes blink-cursor {
+        0%, 100% { opacity: 1; }
+        50%       { opacity: 0; }
+    }
+
+    /* Progress bar section */
+    .loader-progress-wrap {
+        background: #060201;
+        border: 2px solid #669BBC;
+        border-top: 1px solid #1a3a4a;
+        padding: 14px 28px 18px;
+    }
+    .loader-progress-label {
+        display: flex;
+        justify-content: space-between;
+        font-size: 11px;
+        letter-spacing: 0.12em;
+        color: #3d5a6e;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+    }
+    .loader-progress-label span:last-child {
+        color: #669BBC;
+        font-weight: 700;
+    }
+    .loader-progress-track {
+        width: 100%;
+        height: 12px;
+        background: #0e0806;
+        border: 1px solid #1a3a4a;
+        position: relative;
+        overflow: hidden;
+    }
+    .loader-progress-fill {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, #1a4a6e, #669BBC, #a0cfcf);
+        transition: width 0.15s ease;
+        position: relative;
+    }
+    .loader-progress-fill::after {
+        content: '';
+        position: absolute;
+        top: 0; right: 0;
+        width: 20px; height: 100%;
+        background: rgba(255,255,255,0.3);
+        filter: blur(4px);
+    }
+    /* Segmented tick marks on progress bar */
+    .loader-progress-track::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: repeating-linear-gradient(
+            90deg,
+            transparent,
+            transparent calc(10% - 1px),
+            rgba(0,0,0,0.5) calc(10% - 1px),
+            rgba(0,0,0,0.5) 10%
+        );
+        z-index: 1;
+        pointer-events: none;
+    }
+
+    /* Bottom chrome */
+    .loader-footer-chrome {
+        background: #1a0f0c;
+        border: 2px solid #669BBC;
+        border-top: 1px solid #1a3a4a;
+        padding: 5px 14px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 10px;
+        letter-spacing: 0.1em;
+        color: #2d5a6e;
+        text-transform: uppercase;
+    }
+
+    /* Outward wipe — loader splits open from center revealing site beneath */
+    @keyframes loader-glitch-flicker {
+        0%   { opacity: 1; }
+        15%  { opacity: 0.7; filter: brightness(2) hue-rotate(10deg); transform: skewX(-2deg); }
+        30%  { opacity: 1;   filter: brightness(1); transform: skewX(0deg); }
+        50%  { opacity: 0.6; filter: brightness(0.5); }
+        65%  { opacity: 1;   filter: brightness(1.5); transform: skewX(1.5deg); }
+        80%  { opacity: 0.8; transform: skewX(0deg); }
+        100% { opacity: 1; }
+    }
+
+    /* Two halves split outward (top goes up, bottom goes down) */
+    #retro-loader {
+        /* we'll use two pseudo panels via JS-injected divs instead */
+    }
+    .loader-half {
+        position: fixed;
+        left: 0; right: 0;
+        z-index: 9999;
+        overflow: hidden;
+        background: #0a0402;
+        transition: transform 1.4s cubic-bezier(0.76, 0, 0.24, 1);
+    }
+    .loader-half-top {
+        top: 0;
+        height: 62vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-end;
+        padding-bottom: 0;
+    }
+    .loader-half-bottom {
+        bottom: 0;
+        height: 38vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        padding-top: 0;
+    }
+    .loader-half .loader-inner {
+        width: min(640px, 92vw);
+        position: relative;
+        z-index: 3;
+    }
+    .loader-half.split-top    { transform: translateY(-100%); }
+    .loader-half.split-bottom { transform: translateY(100%); }
+
+    /* CRT scanlines on each half */
+    .loader-half::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: repeating-linear-gradient(
+            0deg,
+            transparent, transparent 2px,
+            rgba(0,0,0,0.18) 2px, rgba(0,0,0,0.18) 4px
+        );
+        pointer-events: none;
+        z-index: 2;
+    }
+    .loader-half::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.7) 100%);
+        pointer-events: none;
+        z-index: 2;
+    }
+
+    /* Horizontal split line that glows before opening */
+    #loader-split-line {
+        position: fixed;
+        left: 0; right: 0;
+        top: 62vh;
+        height: 2px;
+        background: #669BBC;
+        z-index: 10000;
+        opacity: 0;
+        box-shadow: 0 0 12px 3px #669BBC, 0 0 30px 6px rgba(102,155,188,0.4);
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+    }
+    #loader-split-line.glow { opacity: 1; }
+    #loader-split-line.gone { display: none; }
+
+    #retro-loader.gone { display: none; }
+
+    /* Hide site until reveal */
+    body.loading header,
+    body.loading main,
+    body.loading footer,
+    body.loading .scanline-sweep,
+    body.loading .fixed.inset-0.z-0,
+    body.loading .fixed.inset-0.z-\[5\] {
+        visibility: hidden;
+    }
+
+    /* Hide main content until loader exits */
+    body.loading header,
+    body.loading main,
+    body.loading footer,
+    body.loading .scanline-sweep,
+    body.loading .fixed.inset-0.z-0,
+    body.loading .fixed.inset-0.z-\[5\] {
+        visibility: hidden;
+    }
+
     /* ── Light mode overrides (unchanged) ── */
     html.light body { background-color: #f5ede6; color: #2c1511; }
     html.light #main-panel { background-color: #fdf3e3 !important; border-color: #5c3d2e !important; }
@@ -321,7 +617,50 @@
     html.light #bg-img { opacity: 0.45 !important; }
 </style>
 </head>
-<body class="bg-background text-on-background font-body-md overflow-hidden selection:bg-tertiary selection:text-on-tertiary">
+<body class="bg-background text-on-background font-body-md overflow-hidden selection:bg-tertiary selection:text-on-tertiary loading">
+
+<!-- ══════════════════════════════════════
+     RETRO BOOT LOADER
+══════════════════════════════════════ -->
+<div id="retro-loader">
+    <!-- Top half -->
+    <div class="loader-half loader-half-top" id="loader-top">
+        <div class="loader-inner">
+            <div class="loader-chrome">
+                <span class="loader-chrome-title">HIRED_OR_FIRED.EXE  ·  INTERVIEW SIM  ·  CANDIDATE LOADING</span>
+                <div class="loader-chrome-dots">
+                    <span style="background:#e7bdb6"></span>
+                    <span style="background:#cfc6ae"></span>
+                    <span style="background:#4ecf8a"></span>
+                </div>
+            </div>
+            <div class="loader-terminal" id="boot-terminal" style="border-bottom:none; min-height:160px; max-height:42vh; overflow:hidden;"></div>
+        </div>
+    </div>
+
+    <!-- Glowing split line -->
+    <div id="loader-split-line"></div>
+
+    <!-- Bottom half -->
+    <div class="loader-half loader-half-bottom" id="loader-bottom">
+        <div class="loader-inner">
+            <div class="loader-progress-wrap" style="border-top:2px solid #669BBC;">
+                <div class="loader-progress-label">
+                    <span>BOOT SEQUENCE</span>
+                    <span id="progress-pct">0%</span>
+                </div>
+                <div class="loader-progress-track">
+                    <div class="loader-progress-fill" id="progress-fill"></div>
+                </div>
+            </div>
+            <div class="loader-footer-chrome">
+                <span>QUESTIONS: 5</span>
+                <span id="boot-status">INITIALIZING...</span>
+                <span>CPU: <span id="cpu-val">00</span>%</span>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Scanline sweep layer -->
 <div class="scanline-sweep"></div>
@@ -515,6 +854,156 @@
             const s = String(totalSeconds % 60).padStart(2, '0');
             if (el) el.textContent = `Uptime: 00:${h}:${m}:${s}`;
         }, 1000);
+    })();
+
+    // ══════════════════════════════════════
+    // RETRO BOOT LOADER
+    // ══════════════════════════════════════
+    (function () {
+        const terminal   = document.getElementById('boot-terminal');
+        const fill       = document.getElementById('progress-fill');
+        const pct        = document.getElementById('progress-pct');
+        const status     = document.getElementById('boot-status');
+        const cpuVal     = document.getElementById('cpu-val');
+        const loader     = document.getElementById('retro-loader');
+
+        const LINES = [
+            { text: 'HIRED_OR_FIRED.EXE  ──  INTERVIEW SIMULATION v1.0',   cls: 'title-line', delay: 0    },
+            { text: '─'.repeat(58),                                          cls: 'dim',        delay: 130  },
+            { text: 'Scanning candidate database...',                        cls: 'dim',        delay: 260  },
+            { text: 'RESUME_PARSER.DLL .................. [LOADED]',         cls: 'normal',     delay: 440  },
+            { text: 'INTERVIEW_ENGINE.SYS ............... [LOADED]',         cls: 'normal',     delay: 620  },
+            { text: 'STRESS_QUESTION_GEN.BIN ............ [LOADED]',         cls: 'normal',     delay: 800  },
+            { text: 'VERDICT_ALGORITHM.EXE .............. [LOADED]',         cls: 'normal',     delay: 980  },
+            { text: '',                                                        cls: 'dim',        delay: 1080 },
+            { text: 'Calibrating interviewer personas...',                    cls: 'dim',        delay: 1160 },
+            { text: '  > STRICT_CORPORATE_BOSS .......... [READY]',          cls: 'warn',       delay: 1300 },
+            { text: '  > CHILL_STARTUP_BRO .............. [READY]',          cls: 'warn',       delay: 1440 },
+            { text: '  > TECHNICAL_LEAD_9000 ............ [READY]',          cls: 'warn',       delay: 1580 },
+            { text: '',                                                        cls: 'dim',        delay: 1680 },
+            { text: 'Loading judgment protocols...',                          cls: 'dim',        delay: 1760 },
+            { text: '  HIRED threshold .................. 70 pts',            cls: 'success',    delay: 1900 },
+            { text: '  FIRED threshold .................. < 40 pts',          cls: 'error',      delay: 2040 },
+            { text: '',                                                        cls: 'dim',        delay: 2140 },
+            { text: 'WARNING: This interview will be graded.',                cls: 'error',      delay: 2220 },
+            { text: 'WARNING: There are no second chances.',                  cls: 'error',      delay: 2380 },
+            { text: '',                                                        cls: 'dim',        delay: 2480 },
+            { text: '▶  ENTER THE INTERVIEW ROOM. GOOD LUCK.',               cls: 'bright',     delay: 2600 },
+        ];
+
+        // Progress checkpoints keyed to line index
+        const PROGRESS = {
+            0:  2,  2: 8,  3: 18, 4: 30, 5: 42,
+            6: 52,  8: 58, 9: 64, 10: 70, 11: 76,
+            13: 82, 14: 87, 15: 91, 17: 95, 18: 98, 20: 100
+        };
+
+        const STATUS_MAP = {
+            0:  'BOOTING...',
+            3:  'PARSING RESUME',
+            5:  'LOADING ENGINE',
+            8:  'BUILDING BOSSES',
+            13: 'SETTING THRESHOLDS',
+            17: 'FINAL WARNINGS',
+            20: 'READY'
+        };
+
+        let cursor = document.createElement('span');
+        cursor.className = 'boot-cursor';
+
+        function setProgress(val) {
+            fill.style.width = val + '%';
+            pct.textContent  = val + '%';
+            // animate cpu counter
+            const target = Math.min(99, Math.round(val * 0.95));
+            cpuVal.textContent = String(target).padStart(2, '0');
+        }
+
+        function revealLine(i) {
+            if (i >= LINES.length) {
+                // Short pause then glitch-exit
+                setTimeout(exitLoader, 480);
+                return;
+            }
+            const cfg  = LINES[i];
+            const line = document.createElement('div');
+            line.className = `boot-line ${cfg.cls}`;
+
+            if (i === LINES.length - 1) {
+                // Last line gets the cursor
+                line.textContent = cfg.text;
+                line.appendChild(cursor);
+            } else {
+                line.textContent = cfg.text;
+            }
+
+            terminal.appendChild(line);
+            // Trigger visible on next frame
+            requestAnimationFrame(() => requestAnimationFrame(() => line.classList.add('visible')));
+
+            // Scroll terminal to bottom
+            terminal.scrollTop = terminal.scrollHeight;
+
+            // Update progress & status
+            if (PROGRESS[i] !== undefined) setProgress(PROGRESS[i]);
+            if (STATUS_MAP[i])             status.textContent = STATUS_MAP[i];
+
+            // Schedule next line
+            const nextDelay = i + 1 < LINES.length
+                ? LINES[i + 1].delay - cfg.delay
+                : 0;
+            setTimeout(() => revealLine(i + 1), nextDelay);
+        }
+
+        function exitLoader() {
+            cursor.remove();
+            status.textContent = 'BOOT COMPLETE';
+            setProgress(100);
+            cpuVal.textContent = '99';
+
+            const loaderTop    = document.getElementById('loader-top');
+            const loaderBottom = document.getElementById('loader-bottom');
+            const splitLine    = document.getElementById('loader-split-line');
+
+            // Step 1: glitch flicker on both halves
+            setTimeout(() => {
+                [loaderTop, loaderBottom].forEach(el => {
+                    el.style.animation = 'loader-glitch-flicker 0.8s ease-in-out forwards';
+                });
+
+                setTimeout(() => {
+                    [loaderTop, loaderBottom].forEach(el => {
+                        el.style.animation = '';
+                    });
+
+                    // Step 2: glow the split line at the seam
+                    splitLine.classList.add('glow');
+
+                    setTimeout(() => {
+                        // Step 3: reveal site behind
+                        document.body.classList.remove('loading');
+
+                        // Step 4: split halves fly outward
+                        loaderTop.classList.add('split-top');
+                        loaderBottom.classList.add('split-bottom');
+
+                        // Fade split line quickly
+                        splitLine.style.transition = 'opacity 0.3s ease';
+                        splitLine.style.opacity = '0';
+
+                        // Step 5: clean up after transition ends
+                        loaderTop.addEventListener('transitionend', () => {
+                            loader.classList.add('gone');
+                            splitLine.classList.add('gone');
+                        }, { once: true });
+
+                    }, 400); // hold glow briefly
+                }, 850);   // after flicker
+            }, 350);       // initial pause
+        }
+
+        // Kick off at first line's delay
+        setTimeout(() => revealLine(0), LINES[0].delay + 80);
     })();
 </script>
 </body>
