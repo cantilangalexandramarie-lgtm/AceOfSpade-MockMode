@@ -1,4 +1,3 @@
-
 // MockMode — main.js
 // Shared utilities used across all pages
 

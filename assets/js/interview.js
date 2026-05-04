@@ -1,4 +1,3 @@
-
 // MockMode — interview.js
 // Core game engine for interview.html.
 // Manages question flow, AI evaluation, stress meter, and

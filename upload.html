@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-
-<html class="dark" lang="en"><head>
+<html class="dark" lang="en">
+<head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>RETRO_OS - The Desk</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;800&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;800&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
       tailwind.config = {
         darkMode: "class",
@@ -66,7 +67,7 @@
         }
         .pixel-border {
             border: 4px solid #190a08;
-            box-shadow: 
+            box-shadow:
                 inset -4px -4px 0px 0px rgba(0,0,0,0.2),
                 inset 4px 4px 0px 0px rgba(255,255,255,0.1);
         }
@@ -74,7 +75,6 @@
             transition: all 0.05s steps(2);
             box-shadow: 0 8px 0 0 #190a08;
             position: relative;
-            image-rendering: pixelated;
         }
         .arcade-button:active {
             transform: translateY(4px);
@@ -82,14 +82,9 @@
         }
         .scanline-overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(
-                rgba(18, 16, 16, 0) 50%,
-                rgba(0, 0, 0, 0.1) 50%
-            );
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
             background-size: 100% 4px;
             z-index: 50;
             pointer-events: none;
@@ -98,135 +93,209 @@
         .isometric-desk {
             transform: perspective(2000px) rotateX(10deg);
         }
-        .inner-recess {
-            box-shadow: inset 4px 4px 0px rgba(0,0,0,0.4);
-        }
         .character-card {
             transition: transform 0.1s steps(4);
+            cursor: pointer;
         }
-        .character-card:hover {
-            transform: translateY(-4px);
+        .character-card:hover { transform: translateY(-4px); }
+        .character-card.active {
+            border-color: #669BBC !important;
+            background-color: rgba(102,155,188,0.15) !important;
         }
-        .crt-glow {
-            text-shadow: 0 0 10px rgba(102, 155, 188, 0.5);
-        }
+        .crt-glow { text-shadow: 0 0 10px rgba(102, 155, 188, 0.5); }
         body::before {
             content: " ";
             display: block;
             position: fixed;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            right: 0;
+            top: 0; left: 0; bottom: 0; right: 0;
             background: radial-gradient(circle, transparent 20%, #000 150%);
             z-index: 40;
             pointer-events: none;
             opacity: 0.4;
         }
+        @keyframes mm-shake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-6px); }
+            40% { transform: translateX(6px); }
+            60% { transform: translateX(-4px); }
+            80% { transform: translateX(4px); }
+        }
+        .mm-shake { animation: mm-shake 0.4s ease; }
     </style>
 </head>
 <body class="bg-background text-on-surface font-body-md min-h-screen py-xl selection:bg-primary selection:text-white">
 <div class="scanline-overlay"></div>
 <main class="max-w-6xl mx-auto px-gutter space-y-xl relative z-10">
-<!-- Header Text Section -->
+
+<!-- Header -->
 <div class="text-center space-y-sm">
-<h1 class="font-headline-xl text-primary crt-glow uppercase tracking-widest">THE DESK</h1>
-<p class="font-body-lg text-tertiary/80 uppercase text-sm tracking-widest">Configure dossier // Select Arbiter</p>
+    <h1 class="font-headline-xl text-primary crt-glow uppercase tracking-widest">THE DESK</h1>
+    <p class="font-body-lg text-tertiary/80 uppercase text-sm tracking-widest">Configure dossier // Select Arbiter</p>
 </div>
-<!-- Integrated Vertical/Isometric Layout -->
+
 <div class="flex flex-col items-center gap-xl">
-<!-- Top Section: Character Selection -->
-<div class="w-full">
-<div class="bg-surface pixel-border p-lg shadow-[8px_8px_0_0_#190a08]">
-<div class="flex items-center justify-between mb-lg border-b-2 border-outline pb-4">
-<h2 class="font-headline-md text-primary flex items-center gap-2 uppercase tracking-tight">
-<span class="material-symbols-outlined text-3xl">person_search</span> Pick Your Fate
-                        </h2>
-<span class="text-[10px] font-label-bold bg-primary text-on-primary px-3 py-1 uppercase tracking-widest">Select Candidate</span>
-</div>
-<div class="grid grid-cols-1 md:grid-cols-3 gap-lg">
-<!-- Strict Character -->
-<div class="character-card group flex flex-col items-center text-center gap-md p-lg bg-surface-container pixel-border hover:bg-outline/50 cursor-pointer">
-<div class="relative w-24 h-24 pixel-border overflow-hidden bg-background shrink-0 shadow-[4px_4px_0_0_#190a08]">
-<img class="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all" data-alt="Strict office manager illustration" src="https://lh3.googleusercontent.com/aida/ADBb0ugex1dnDlz6S9fYFOU5rv93Xh6jJFs8zxBLz63pNT1n7JjzZg4lgbSEK9kubvQNOtWjpHF7-EB5rg0nlukGh7owKl3E7bL-N3Tj1i5w5awzuAIgG6qPodw-uOq_op8wH3EilMT7WWcZGtX_NMjz_fRmaIVMXahay8uNJ9IZ4Zfn1On-gc6NTAVJzzJ3fTJ9ZY1_NJKyi2PbtW2eXL2H3C3DeBRI1ga_AQ4EqPZm_I-CLOnsG90gj2jJhIxdbzqQBXABaVUmgGVsets"/>
-</div>
-<div>
-<h3 class="font-headline-md text-tertiary uppercase text-lg">Strict</h3>
-<p class="text-[10px] text-tertiary/60 font-bold uppercase tracking-widest">Protocol / Efficiency</p>
-</div>
-</div>
-<!-- Chill Character (Selected) -->
-<div class="character-card group flex flex-col items-center text-center gap-md p-lg bg-primary/20 pixel-border border-primary shadow-[4px_4px_0_0_#190a08] cursor-pointer">
-<div class="relative w-24 h-24 pixel-border overflow-hidden bg-background shrink-0 shadow-[4px_4px_0_0_#190a08]">
-<img class="w-full h-full object-cover" data-alt="Chill creative director illustration" src="https://lh3.googleusercontent.com/aida/ADBb0uiIg8fQtF_J1KqdCQK2ot7JYj-BmK7ywKUkVDq6If8en7IV7J9iAWiXhpDm5iujytcvscROUWXBm0XSSYD1JY-hMx_5yoaj6Ubzd3kgK0KT1qQfSpaMC76vO7sZJzm0lRETTspi1tvjPBszPw8oW9xypIlqghwi5jN9FEX_6xjo-Ui-iRihhJawpkmZ80cxl4pcjdCXCTY1s1zYCZ5g7y1bcNoZw5MLw8RGQVTckVkC7-P59lJWGBNMeXNxIj0pUKvmqpOaoJhpdw"/>
-</div>
-<div>
-<h3 class="font-headline-md text-primary uppercase text-lg">Chill</h3>
-<p class="text-[10px] text-primary/80 font-bold uppercase tracking-widest">Vibe / Culture</p>
-</div>
-<div class="absolute -top-2 -right-2 bg-primary text-on-primary w-6 h-6 flex items-center justify-center pixel-border">
-<span class="material-symbols-outlined text-xs">check</span>
-</div>
-</div>
-<!-- Tough Character -->
-<div class="character-card group flex flex-col items-center text-center gap-md p-lg bg-surface-container pixel-border hover:bg-outline/50 cursor-pointer">
-<div class="relative w-24 h-24 pixel-border overflow-hidden bg-background shrink-0 shadow-[4px_4px_0_0_#190a08]">
-<div class="w-full h-full flex items-center justify-center bg-outline/20">
-<span class="material-symbols-outlined text-5xl text-tertiary">psychology</span>
-</div>
-</div>
-<div>
-<h3 class="font-headline-md text-tertiary uppercase text-lg">Tough</h3>
-<p class="text-[10px] text-tertiary/60 font-bold uppercase tracking-widest">Logic / Stress</p>
-</div>
-</div>
-</div>
-</div>
-</div>
-<!-- Middle Section: The Dossier -->
-<div class="w-full max-w-4xl isometric-desk">
-<div class="relative w-full h-[500px]">
-<!-- Folder Interface -->
-<div class="absolute inset-0 bg-surface pixel-border shadow-[12px_12px_0_0_#190a08] flex flex-col overflow-hidden">
-<div class="h-10 bg-surface-container border-b-4 border-[#190a08] flex items-center px-lg">
-<div class="flex gap-2 mr-6">
-<div class="w-3 h-3 bg-error pixel-border"></div>
-<div class="w-3 h-3 bg-primary pixel-border"></div>
-</div>
-<div class="flex-grow">
-<span class="font-label-bold text-tertiary uppercase tracking-[0.2em] text-[10px]">Project Dossier // ID_404</span>
-</div>
-<span class="material-symbols-outlined text-primary text-sm">terminal</span>
-</div>
-<div class="flex-grow p-xl m-4 pixel-border flex flex-col overflow-hidden bg-white">
-<div class="flex items-center justify-between mb-md">
-<label class="font-label-bold uppercase text-xs tracking-widest text-background">Input Credentials:</label>
-<span class="text-[10px] font-mono animate-pulse text-background/60">REC_ACTIVE...</span>
-</div>
-<textarea class="flex-grow bg-transparent p-lg border-none focus:ring-0 font-body-md resize-none text-lg leading-relaxed uppercase tracking-tight text-background placeholder-background/40" placeholder="Tell your story... describe the battles."></textarea>
-</div>
-<div class="h-16 flex items-center justify-center px-lg pb-4">
-<div class="flex items-center gap-md bg-surface-container px-lg py-2 pixel-border border-dashed border-primary/50 cursor-pointer hover:bg-primary/10 transition-colors">
-<span class="material-symbols-outlined text-primary text-xl">upload_file</span>
-<span class="text-[10px] font-black text-primary uppercase tracking-widest">Drop Artifact (DAT/PKG)</span>
-</div>
-</div>
-</div>
-<!-- Status Sticker -->
-<div class="absolute -top-4 -right-4 w-24 h-24 bg-secondary pixel-border flex items-center justify-center -rotate-6 shadow-[4px_4px_0_0_#190a08] hover:scale-110 transition-transform cursor-default">
-<span class="font-black text-on-primary text-center leading-none text-lg uppercase italic tracking-tighter">HIRE<br/>ME</span>
-</div>
-</div>
-</div>
-<!-- Bottom Section: Arcade Buttons -->
-<div class="flex flex-col sm:flex-row items-center justify-center gap-xl w-full pt-lg">
-<button class="arcade-button w-full sm:w-64 px-lg py-5 bg-surface-container pixel-border text-tertiary font-headline-md uppercase tracking-widest flex items-center justify-center gap-3">
-<span class="material-symbols-outlined">delete</span> Scrap It
-                </button>
-<button class="arcade-button w-full sm:w-72 px-lg py-5 bg-primary pixel-border text-on-primary font-headline-md uppercase tracking-widest flex items-center justify-center gap-3">
-                    Send to Boss <span class="material-symbols-outlined">rocket</span>
-</button>
-</div>
+
+    <!-- Personality Selection -->
+    <div class="w-full">
+        <div class="bg-surface pixel-border p-lg shadow-[8px_8px_0_0_#190a08]">
+            <div class="flex items-center justify-between mb-lg border-b-2 border-outline pb-4">
+                <h2 class="font-headline-md text-primary flex items-center gap-2 uppercase tracking-tight">
+                    <span class="material-symbols-outlined text-3xl">person_search</span> Pick Your Fate
+                </h2>
+                <span class="text-[10px] font-label-bold bg-primary text-on-primary px-3 py-1 uppercase tracking-widest">Select Arbiter</span>
+            </div>
+            <!-- personality-cards class is used by upload.js for the shake animation -->
+            <div class="personality-cards grid grid-cols-1 md:grid-cols-3 gap-lg">
+
+                <!-- Strict / Corporate -->
+                <div class="character-card group flex flex-col items-center text-center gap-md p-lg bg-surface-container pixel-border hover:bg-outline/50"
+                     data-personality="corporate" aria-pressed="false">
+                    <div class="relative w-24 h-24 pixel-border overflow-hidden bg-background shrink-0 shadow-[4px_4px_0_0_#190a08]">
+                        <img class="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all"
+                             src="https://lh3.googleusercontent.com/aida/ADBb0ugex1dnDlz6S9fYFOU5rv93Xh6jJFs8zxBLz63pNT1n7JjzZg4lgbSEK9kubvQNOtWjpHF7-EB5rg0nlukGh7owKl3E7bL-N3Tj1i5w5awzuAIgG6qPodw-uOq_op8wH3EilMT7WWcZGtX_NMjz_fRmaIVMXahay8uNJ9IZ4Zfn1On-gc6NTAVJzzJ3fTJ9ZY1_NJKyi2PbtW2eXL2H3C3DeBRI1ga_AQ4EqPZm_I-CLOnsG90gj2jJhIxdbzqQBXABaVUmgGVsets"
+                             alt="Strict corporate manager"/>
+                    </div>
+                    <div>
+                        <h3 class="font-headline-md text-tertiary uppercase text-lg">Strict</h3>
+                        <p class="text-[10px] text-tertiary/60 font-bold uppercase tracking-widest">Protocol / Efficiency</p>
+                    </div>
+                </div>
+
+                <!-- Chill / Startup -->
+                <div class="character-card group flex flex-col items-center text-center gap-md p-lg bg-surface-container pixel-border hover:bg-outline/50"
+                     data-personality="startup" aria-pressed="false">
+                    <div class="relative w-24 h-24 pixel-border overflow-hidden bg-background shrink-0 shadow-[4px_4px_0_0_#190a08]">
+                        <img class="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all"
+                             src="https://lh3.googleusercontent.com/aida/ADBb0uiIg8fQtF_J1KqdCQK2ot7JYj-BmK7ywKUkVDq6If8en7IV7J9iAWiXhpDm5iujytcvscROUWXBm0XSSYD1JY-hMx_5yoaj6Ubzd3kgK0KT1qQfSpaMC76vO7sZJzm0lRETTspi1tvjPBszPw8oW9xypIlqghwi5jN9FEX_6xjo-Ui-iRihhJawpkmZ80cxl4pcjdCXCTY1s1zYCZ5g7y1bcNoZw5MLw8RGQVTckVkC7-P59lJWGBNMeXNxIj0pUKvmqpOaoJhpdw"
+                             alt="Chill startup founder"/>
+                    </div>
+                    <div>
+                        <h3 class="font-headline-md text-primary uppercase text-lg">Chill</h3>
+                        <p class="text-[10px] text-primary/80 font-bold uppercase tracking-widest">Vibe / Culture</p>
+                    </div>
+                </div>
+
+                <!-- Tough / Technical -->
+                <div class="character-card group flex flex-col items-center text-center gap-md p-lg bg-surface-container pixel-border hover:bg-outline/50"
+                     data-personality="technical" aria-pressed="false">
+                    <div class="relative w-24 h-24 pixel-border overflow-hidden bg-background shrink-0 shadow-[4px_4px_0_0_#190a08]">
+                        <div class="w-full h-full flex items-center justify-center bg-outline/20">
+                            <span class="material-symbols-outlined text-5xl text-tertiary">psychology</span>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="font-headline-md text-tertiary uppercase text-lg">Tough</h3>
+                        <p class="text-[10px] text-tertiary/60 font-bold uppercase tracking-widest">Logic / Stress</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Role Selection -->
+    <div class="w-full">
+        <div class="bg-surface pixel-border p-lg shadow-[8px_8px_0_0_#190a08]">
+            <div class="flex items-center justify-between mb-lg border-b-2 border-outline pb-4">
+                <h2 class="font-headline-md text-primary flex items-center gap-2 uppercase tracking-tight">
+                    <span class="material-symbols-outlined text-3xl">work</span> Target Role
+                </h2>
+                <span class="text-[10px] font-label-bold bg-primary text-on-primary px-3 py-1 uppercase tracking-widest">Select Position</span>
+            </div>
+            <!-- role-cards class is used by upload.js for the shake animation -->
+            <div class="role-cards grid grid-cols-2 md:grid-cols-5 gap-md">
+                <div class="character-card flex flex-col items-center text-center gap-sm p-md bg-surface-container pixel-border hover:bg-outline/50"
+                     data-role="developer" aria-pressed="false">
+                    <span class="material-symbols-outlined text-3xl text-tertiary">code</span>
+                    <span class="text-[11px] font-label-bold text-tertiary uppercase tracking-widest">Developer</span>
+                </div>
+                <div class="character-card flex flex-col items-center text-center gap-sm p-md bg-surface-container pixel-border hover:bg-outline/50"
+                     data-role="designer" aria-pressed="false">
+                    <span class="material-symbols-outlined text-3xl text-tertiary">palette</span>
+                    <span class="text-[11px] font-label-bold text-tertiary uppercase tracking-widest">Designer</span>
+                </div>
+                <div class="character-card flex flex-col items-center text-center gap-sm p-md bg-surface-container pixel-border hover:bg-outline/50"
+                     data-role="analyst" aria-pressed="false">
+                    <span class="material-symbols-outlined text-3xl text-tertiary">bar_chart</span>
+                    <span class="text-[11px] font-label-bold text-tertiary uppercase tracking-widest">Analyst</span>
+                </div>
+                <div class="character-card flex flex-col items-center text-center gap-sm p-md bg-surface-container pixel-border hover:bg-outline/50"
+                     data-role="marketing" aria-pressed="false">
+                    <span class="material-symbols-outlined text-3xl text-tertiary">campaign</span>
+                    <span class="text-[11px] font-label-bold text-tertiary uppercase tracking-widest">Marketing</span>
+                </div>
+                <div class="character-card flex flex-col items-center text-center gap-sm p-md bg-surface-container pixel-border hover:bg-outline/50"
+                     data-role="general" aria-pressed="false">
+                    <span class="material-symbols-outlined text-3xl text-tertiary">person</span>
+                    <span class="text-[11px] font-label-bold text-tertiary uppercase tracking-widest">General</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Resume Input (The Dossier) -->
+    <div class="w-full max-w-4xl isometric-desk">
+        <div class="relative w-full">
+            <div class="bg-surface pixel-border shadow-[12px_12px_0_0_#190a08] flex flex-col overflow-hidden">
+                <!-- Terminal title bar -->
+                <div class="h-10 bg-surface-container border-b-4 border-[#190a08] flex items-center px-lg">
+                    <div class="flex gap-2 mr-6">
+                        <div class="w-3 h-3 bg-error pixel-border"></div>
+                        <div class="w-3 h-3 bg-primary pixel-border"></div>
+                    </div>
+                    <span class="font-label-bold text-tertiary uppercase tracking-[0.2em] text-[10px]">Project Dossier // ID_404</span>
+                    <span class="ml-auto material-symbols-outlined text-primary text-sm">terminal</span>
+                </div>
+
+                <!-- Text area -->
+                <div class="flex-grow p-xl m-4 pixel-border flex flex-col overflow-hidden bg-white min-h-[300px]">
+                    <div class="flex items-center justify-between mb-md">
+                        <label class="font-label-bold uppercase text-xs tracking-widest text-background" for="resume-input">Input Credentials:</label>
+                        <span id="resume-char-count" class="text-[10px] font-mono text-background/60">0 characters</span>
+                    </div>
+                    <!-- id="resume-input" is required by upload.js -->
+                    <textarea
+                        id="resume-input"
+                        class="flex-grow bg-transparent p-lg border-none focus:ring-0 font-body-md resize-none text-lg leading-relaxed uppercase tracking-tight text-background placeholder-background/40"
+                        placeholder="Tell your story... describe the battles."
+                    ></textarea>
+                </div>
+
+                <!-- File upload trigger -->
+                <div class="h-16 flex items-center justify-center px-lg pb-4">
+                    <label for="resume-file" class="flex items-center gap-md bg-surface-container px-lg py-2 pixel-border border-dashed border-primary/50 cursor-pointer hover:bg-primary/10 transition-colors">
+                        <span class="material-symbols-outlined text-primary text-xl">upload_file</span>
+                        <span class="text-[10px] font-black text-primary uppercase tracking-widest">Drop Artifact (.txt)</span>
+                    </label>
+                    <!-- id="resume-file" is required by upload.js -->
+                    <input type="file" id="resume-file" accept=".txt" class="hidden"/>
+                </div>
+            </div>
+
+            <!-- HIRE ME sticker -->
+            <div class="absolute -top-4 -right-4 w-24 h-24 bg-secondary pixel-border flex items-center justify-center -rotate-6 shadow-[4px_4px_0_0_#190a08] hover:scale-110 transition-transform cursor-default">
+                <span class="font-black text-on-primary text-center leading-none text-lg uppercase italic tracking-tighter">HIRE<br/>ME</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-xl w-full pt-lg">
+        <button onclick="clearSession(); navigateTo('index.html');"
+            class="arcade-button w-full sm:w-64 px-lg py-5 bg-surface-container pixel-border text-tertiary font-headline-md uppercase tracking-widest flex items-center justify-center gap-3">
+            <span class="material-symbols-outlined">delete</span> Scrap It
+        </button>
+        <!-- id="start-interview-btn" is required by upload.js -->
+        <button id="start-interview-btn"
+            class="arcade-button w-full sm:w-72 px-lg py-5 bg-primary pixel-border text-on-primary font-headline-md uppercase tracking-widest flex items-center justify-center gap-3">
+            Send to Boss <span class="material-symbols-outlined">rocket</span>
+        </button>
+    </div>
+
 </div>
 </main>
-</body></html>
+
+<script src="assets/js/main.js"></script>
+<script src="assets/js/ai.js"></script>
+<script src="assets/js/upload.js"></script>
+</body>
+</html>

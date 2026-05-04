@@ -1,0 +1,47 @@
+John Dela Cruz
+Software Developer
+john.delacruz@email.com | Manila, Philippines | github.com/johndc
+
+SUMMARY
+Fresh computer science graduate with hands-on experience in web and mobile development. Passionate about building clean, efficient software and learning new technologies fast.
+
+EDUCATION
+Bachelor of Science in Computer Science
+University of the East, 2024
+GPA: 1.5 | University Scholar
+
+SKILLS
+Languages: Python, JavaScript, Java, PHP, C++
+Frontend: HTML, CSS, Bootstrap, Tailwind CSS, React
+Backend: Node.js, Express, Flask
+Database: MySQL, PostgreSQL
+Tools: Git, GitHub, VS Code, Postman, Figma
+Other: REST APIs, basic Docker, Linux CLI
+
+EXPERIENCE
+Web Developer Intern
+TechStart PH, June 2023 - August 2023
+- Built and maintained internal dashboards using React and Node.js
+- Reduced page load time by 30% by optimizing database queries
+- Collaborated with a 4-person team using Git and Agile workflows
+
+Freelance Developer
+Self-employed, 2022 - Present
+- Developed 3 client websites using PHP and MySQL
+- Built a mobile app prototype using Flutter for a local logistics startup
+- Handled client communication, requirements gathering, and deployment
+
+PROJECTS
+SafeRoute - Commute Safety App
+Flask backend, Flutter frontend, integrated PAGASA and MMDA APIs for real-time safety scoring and route recommendations for Metro Manila commuters.
+
+Annyeong Market - E-commerce System
+PHP/MySQL full-stack web app with inventory management, order processing, and admin dashboard. Built as a university final project.
+
+CERTIFICATIONS
+- IBM Full Stack Software Developer (Coursera, 2023)
+- Google IT Support Professional Certificate (2022)
+
+LANGUAGES
+English - Fluent (TOEIC 920/990)
+Filipino - Native

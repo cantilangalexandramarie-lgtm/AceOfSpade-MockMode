@@ -1,4 +1,3 @@
-
 // MockMode — results.js
 // Handles results.html: verdict reveal, score chart,
 // strengths/weaknesses display, and session reset.
